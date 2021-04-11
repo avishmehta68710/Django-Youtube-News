@@ -84,7 +84,10 @@ def register(request):
         last_name = request.POST.get('last_name')
         username = request.POST.get('email')
         password = request.POST.get('password')
-        if checks_passwd(password) == True and User.objects.filter(username=username).exists() == False:
+        if len(first_name) == 0 or len(last_name) == 0 or len(username) == 0 or len(password) == 0:
+            messages.info(request,"Field cannot be empty")
+            return redirect('register')
+        elif checks_passwd(password) == True and User.objects.filter(username=username).exists() == False:
             user = User.objects.create_user(username=username,first_name=first_name,last_name=last_name,password=password)
             user.save()
             print(first_name,last_name,username,password)
@@ -108,7 +111,10 @@ def enter_user(request):
         # if not user:
         #     return Response({'error':'Invalid Credentials'},status=HTTP_400_NOT_FOUND)
         print(user)
-        if user is not None:
+        if len(password1) == 0 or len(username) == 0:
+            messages.info(request,"Field cannot be empty")
+            return redirect('login')
+        elif user is not None:
             login(request,user)
             return redirect('/')
         else:
